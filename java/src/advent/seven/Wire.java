@@ -3,21 +3,18 @@ package advent.seven;
 import java.util.Map;
 
 public class Wire {
-	public final String name;
-	public boolean set;
+	public final String name;	
 	public Signal signal;	
 	private BinaryGate valueComputer;
 	
 	public Wire(String name) {			
 		this.name = name;
-		this.signal = null;
-		this.set = false;
+		this.signal = null;		
 	}
 	
 	private Wire() {
 		this.name = "null";
-		this.signal = null;
-		this.set = false;
+		this.signal = null;		
 	}
 	
 	private static Wire NullWire = null;
@@ -31,9 +28,6 @@ public class Wire {
 		
 	public void setSignal(Signal sig) {
 		this.signal = sig;
-		if (sig != Signal.getNullSignal()) {
-			this.set = true;
-		}		
 	}	
 
 	public void addValueComputer(BinaryGate binaryGate) {
@@ -84,6 +78,6 @@ public class Wire {
 
 	@Override
 	public String toString() {
-		return "Wire [name=" + name + ", set=" + set + ", signal=" + signal + "]";
+		return "Wire [name=" + name + ", signal=" + signal + "]";
 	}
 }

@@ -2,14 +2,12 @@ package advent.seven;
 
 public class Signal {		
 	private final String value;
-	private final String intValue;
-	public boolean set;
+	private final String intValue;	
 	
 	public Signal(int val) {
 		String binValue = Integer.toBinaryString(val);
 		value = padding(binValue) + binValue;
-		intValue = "" + Integer.parseInt(value, 2);
-		set = true;
+		intValue = "" + Integer.parseInt(value, 2);		
 	}
 	
 	public Signal(String val) {
@@ -20,8 +18,7 @@ public class Signal {
 			throw new RuntimeException("Bad characters in signal: " + val);
 		}
 		value = padding(val) + val;
-		intValue = "" + Integer.parseInt(value, 2);
-		set = true;
+		intValue = "" + Integer.parseInt(value, 2);	
 	}
 	
 	private String padding(String val) {
@@ -35,8 +32,7 @@ public class Signal {
 	
 	private Signal() {
 		value = null;
-		intValue = "null";
-		set = false;
+		intValue = "null";		
 	}
 	
 	private static Signal NullSignal = null;
