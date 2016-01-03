@@ -47,6 +47,10 @@ public class Signal {
 		}
 		return NullSignal;
 	}
+	
+	public int getValue() {
+		return Integer.parseInt(intValue);
+	}
 
 	@Override
 	public String toString() {
@@ -112,6 +116,6 @@ public class Signal {
 	}
 	
 	public static Signal IDENTITY(Signal a, Signal b) {		
-		return new Signal(Integer.parseInt(b.intValue));
+		return new Signal(b.getValue());
 	}
 }

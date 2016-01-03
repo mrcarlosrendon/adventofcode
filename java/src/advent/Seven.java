@@ -3,10 +3,7 @@ package advent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import advent.seven.*;
@@ -24,12 +21,10 @@ public class Seven {
 		while((line = br.readLine()) != null) {
 			if (line.isEmpty()) {
 				break;
-			}			
-			System.out.println("DEBUG: LINE: " + line);
-			
+			}
 			String split[] = line.split(" -> ");
 			String left = split[0];
-			Wire rwire = getWireOrCreate(wires, (split[1]));
+			Wire rwire = getWireOrCreate(wires, split[1]);
 			if (left.contains(" ")) { // GATE
 				String leftSplit[] = left.split(" ");
 				Wire lrwire = null;
@@ -59,14 +54,14 @@ public class Seven {
 			}
 		}
 		
-		List<String> sortedWires = new ArrayList<String>();
-		sortedWires.addAll(wires.keySet());
-		Collections.sort(sortedWires);
+		Wire a = getWireOrCreate(wires, "a");		
+		Signal valueA = a.getOutput(new HashMap<String, Signal>());
+		System.out.println("First Part: " + valueA);
 		
-		for(String wireName : sortedWires) {
-			Wire w = wires.get(wireName);
-			System.out.println(w.name + ": " + w.signal);
-		}
+		int aValue = valueA.getValue();
+		Wire b = getWireOrCreate(wires, "b");
+		b.setSignal(new Signal(aValue));		
+		System.out.println("Second Part: " + a.getOutput(new HashMap<String, Signal>()).toString());
 	}
 	
 	public static Wire getWireOrCreate(Map<String, Wire> wires, String name) {
@@ -75,9 +70,6 @@ public class Seven {
 			if (name.matches("[0-9]+")) {
 				Signal sig = new Signal(Integer.parseInt(name));
 				wire.setSignal(sig);
-			}
-			else {
-				wire.setSignal(Signal.getNullSignal());
 			}
 			wires.put(name, wire);
 		}

@@ -1,14 +1,12 @@
 package advent.seven;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Map;
 
 public class Wire {
 	public final String name;
 	public boolean set;
-	public Signal signal;
-	
-	private List<BinaryGate> notify = new ArrayList<BinaryGate>();
+	public Signal signal;	
+	private BinaryGate valueComputer;
 	
 	public Wire(String name) {			
 		this.name = name;
@@ -30,27 +28,35 @@ public class Wire {
 		}
 		return NullWire;
 	}
-	
-	public void setSignal(Signal sig) {
-		System.out.println("DEBUG: setting " + name);
 		
+	public void setSignal(Signal sig) {
 		this.signal = sig;
 		if (sig != Signal.getNullSignal()) {
 			this.set = true;
+		}		
+	}	
+
+	public void addValueComputer(BinaryGate binaryGate) {
+		this.valueComputer = binaryGate;
+	}	
+	
+	public boolean isConstant() {
+		return this == NullWire || name.matches("^[0-9]+");
+	}
+		
+	public Signal getOutput(Map<String, Signal> memoized) {
+		if (memoized.containsKey(name)) {
+			return memoized.get(name);
 		}
-		for (BinaryGate gate : notify) {			
-			gate.setOutput();
+		if (isConstant() || this.valueComputer == null) {			
+			memoized.put(name, signal);
+			return signal;
 		}
+		Signal signal = this.valueComputer.compute(memoized);		
+		memoized.put(name, signal);
+		return signal;
 	}
 	
-	public void addNotifier(BinaryGate g) {
-		if (this == NullWire 
-				|| name.matches("^[0-9]+")) { // constant
-			return;
-		}
-		notify.add(g);
-	}
-
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -79,5 +85,5 @@ public class Wire {
 	@Override
 	public String toString() {
 		return "Wire [name=" + name + ", set=" + set + ", signal=" + signal + "]";
-	}		
+	}
 }
