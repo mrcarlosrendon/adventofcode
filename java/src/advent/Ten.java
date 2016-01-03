@@ -16,14 +16,18 @@ public class Ten {
 			}
 						
 			String answer = line;
-			for (int i=0; i<40; i++) {				
+			for (int i=0; i<50; i++) {				
 				if (i == 39) {
-					answer = apply(answer, true);
+					System.out.println("Part 1:");
+					answer = apply(answer, true);					
+				}
+				if (i == 49) {
+					System.out.println("Part 2:");
+					answer = apply(answer, true); // Not sure why I get wrong answer for 50 times
 				}
 				else {
-					answer = apply(answer, true);
-				}
-				
+					answer = apply(answer, false);					
+				}				
 			}
 			break;
 		}		
