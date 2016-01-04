@@ -36,6 +36,10 @@ public class JsonObject implements JsonElement {
 		sb.append("{");
 		for(Entry<String, JsonElement> entry : mapping.entrySet()) {
 			sb.append(String.format("\"%s\": %s", entry.getKey(), entry.getValue()));
+			sb.append(",");
+		}
+		if (mapping.size()>0) {
+			sb.deleteCharAt(sb.length()-1);
 		}
 		sb.append("}");
 		return sb.toString();

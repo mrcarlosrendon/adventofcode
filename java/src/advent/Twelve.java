@@ -6,8 +6,6 @@ import java.io.InputStreamReader;
 import java.util.ArrayDeque;
 import java.util.Deque;
 
-import javax.management.RuntimeErrorException;
-
 import advent.twelve.*;
 
 public class Twelve {
@@ -43,7 +41,7 @@ public class Twelve {
 						parsingHierarchy.push(new JsonArray());						
 					}
 					else if (c == '{') {
-						parsingHierarchy.push(new JsonObject());						
+						parsingHierarchy.push(new JsonObject());
 					}
 					else if ((""+c).matches("[0-9]")) {
 						parsingHierarchy.push(new JsonNumber(Long.parseLong(""+c)));
@@ -140,7 +138,8 @@ public class Twelve {
 		// manipulate parsed json
 		JsonElement json = parsingHierarchy.peekFirst();
 		System.out.println("Root Element: " + json.getJsonType() + " " + json);
-	}	
+		System.out.println("Sum of Numbers: " + sumOfNumbers(json, 0));
+	}
 	
 	public static void addToParent(Deque<JsonElement> parsingHierarchy, JsonElement toAdd) {
 		JsonElement elem = parsingHierarchy.peekFirst();
@@ -157,5 +156,10 @@ public class Twelve {
 		else {
 			throw new RuntimeException("Unexpected parent type: " + elem.getJsonType());
 		}
+	}
+	
+	public static long sumOfNumbers(JsonElement json, long currSum) {
+		
+		return 0;
 	}
 }
