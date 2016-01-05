@@ -35,7 +35,7 @@ public class Twelve {
 				}
 				
 				if (currentType == null
-						|| (currentType == JsonType.ARRAY && c != ']')
+						|| (currentType == JsonType.ARRAY && c != ']' && c != ',')
 						|| (currentType == JsonType.OBJECTVALUE && c != '}' && c != ',' && c != ':')) {
 					if (c == '[') {
 						parsingHierarchy.push(new JsonArray());						
@@ -46,6 +46,9 @@ public class Twelve {
 					else if ((""+c).matches("[0-9]")) {
 						parsingHierarchy.push(new JsonNumber(Long.parseLong(""+c)));
 					}
+					else if (c == '-') {
+						parsingHierarchy.push(new JsonNegativeNumber(0));
+					}
 					else if (c == '"') {
 						parsingHierarchy.push(new JsonString());
 					}					
@@ -55,10 +58,13 @@ public class Twelve {
 				}
 				else if (currentType == JsonType.OBJECT) {
 					if (c == '}') {
-						addToParent(parsingHierarchy, parsingHierarchy.pop());
+						addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
 					}
 					else if (c == '"') {
 						parsingHierarchy.push(new JsonObjectKey());
+					}
+					else if (c == ',') {
+						// skip
 					}
 					else if (c == '{') {
 						parsingHierarchy.push(new JsonObject());
@@ -85,7 +91,7 @@ public class Twelve {
 						JsonObjectKey key = (JsonObjectKey)parsingHierarchy.pop();
 						JsonObject obj = (JsonObject)parsingHierarchy.pop();
 						obj.put(key.getString(), value.getElem());
-						addToParent(parsingHierarchy, obj);
+						addToParent(parsingHierarchy, obj, c);
 					} 
 					else if (c == ',') {
 						JsonObjectValue value = (JsonObjectValue)parsingHierarchy.pop();
@@ -102,7 +108,10 @@ public class Twelve {
 				}
 				else if (currentType == JsonType.ARRAY) {
 					if (c == ']') {
-						addToParent(parsingHierarchy, parsingHierarchy.pop());
+						addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
+					}
+					else if (c == ',') {
+						// ignore
 					}
 					else {
 						throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
@@ -110,11 +119,23 @@ public class Twelve {
 				}
 				else if (currentType == JsonType.NUMBER) {
 					if (c == ',' || c == ']' || c == '}') {
-						addToParent(parsingHierarchy, parsingHierarchy.pop());
+						addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
 					}
-					else if ((""+c).matches("0-9")) {
-						JsonNumber num = (JsonNumber)parsingHierarchy.pop();
-						parsingHierarchy.push(new JsonNumber(Long.parseLong(num.getNumber().toString() + c)));
+					else if ((""+c).matches("[0-9]")) {											
+						parsingHierarchy.push((JsonNumber)parsingHierarchy.pop());												
+					}
+					else {
+						throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
+					}
+				}
+				else if (currentType == JsonType.NEGATIVENUMBER) {
+					if (c == ',' || c == ']' || c == '}') {
+						JsonNegativeNumber num = (JsonNegativeNumber)parsingHierarchy.pop();						
+						addToParent(parsingHierarchy, new JsonNumber(-num.getNumber()), c);
+					}
+					else if ((""+c).matches("[0-9]")) {
+						parsingHierarchy.pop();
+						parsingHierarchy.push(new JsonNumber(-Long.parseLong(""+c)));												
 					}
 					else {
 						throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
@@ -122,7 +143,7 @@ public class Twelve {
 				}
 				else if (currentType == JsonType.STRING) {
 					if (c == '"') {
-						addToParent(parsingHierarchy, parsingHierarchy.pop());						
+						addToParent(parsingHierarchy, parsingHierarchy.pop(), c);						
 					}
 					else if ((""+c).matches("[a-zA-Z]")) {
 						JsonString str = (JsonString)parsingHierarchy.pop();
@@ -138,10 +159,10 @@ public class Twelve {
 		// manipulate parsed json
 		JsonElement json = parsingHierarchy.peekFirst();
 		System.out.println("Root Element: " + json.getJsonType() + " " + json);
-		System.out.println("Sum of Numbers: " + sumOfNumbers(json, 0));
+		System.out.println("Sum of Numbers: " + sumOfNumbers(json));
 	}
 	
-	public static void addToParent(Deque<JsonElement> parsingHierarchy, JsonElement toAdd) {
+	public static void addToParent(Deque<JsonElement> parsingHierarchy, JsonElement toAdd, char currentChar) {
 		JsonElement elem = parsingHierarchy.peekFirst();
 		if (elem == null) {
 			parsingHierarchy.push(toAdd);
@@ -150,16 +171,54 @@ public class Twelve {
 			((JsonArray)elem).add(toAdd);
 		}
 		else if (elem.getJsonType() == JsonType.OBJECTVALUE) {
-			parsingHierarchy.pop();
-			parsingHierarchy.push(new JsonObjectValue(toAdd));
+			if (currentChar == '}') {
+				parsingHierarchy.pop();
+				JsonObjectValue value = new JsonObjectValue(toAdd);
+				JsonObjectKey key = (JsonObjectKey)parsingHierarchy.pop();
+				JsonObject obj = (JsonObject)parsingHierarchy.peekFirst();
+				obj.put(key.getString(), value.getElem());
+				//addToParent(parsingHierarchy, parsingHierarchy.pop(), ' '); // dummy character so it doesn't cascade down
+			}
+			else if (currentChar == ',') {
+				parsingHierarchy.pop();
+				JsonObjectValue value = new JsonObjectValue(toAdd);
+				JsonObjectKey key = (JsonObjectKey)parsingHierarchy.pop();
+				JsonObject obj = (JsonObject)parsingHierarchy.peekFirst();
+				obj.put(key.getString(), value.getElem());
+			}
+			else {
+				parsingHierarchy.pop();
+				parsingHierarchy.push(new JsonObjectValue(toAdd));
+			}
 		}
 		else {
 			throw new RuntimeException("Unexpected parent type: " + elem.getJsonType());
 		}
 	}
 	
-	public static long sumOfNumbers(JsonElement json, long currSum) {
-		
-		return 0;
+	public static long sumOfNumbers(JsonElement json) {
+		long sum = 0;
+		switch(json.getJsonType()){
+		case ARRAY:
+			for (JsonElement jelem : ((JsonArray)json).getArray()) {
+				sum += sumOfNumbers(jelem);
+			}
+			break;
+		case NUMBER:
+			sum = ((JsonNumber)json).getNumber();
+			break;
+		case OBJECT:
+			JsonObject jobj = (JsonObject)json;
+			for(String key : jobj.keys()) {
+				sum += sumOfNumbers(jobj.get(key));
+			}
+			break;
+		case STRING:
+			sum = 0;
+			break;
+		default:
+			throw new RuntimeException("Unexpected json type encountered: " + json.getJsonType());
+		}
+		return sum;
 	}
 }

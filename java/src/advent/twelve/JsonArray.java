@@ -1,6 +1,7 @@
 package advent.twelve;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class JsonArray implements JsonElement {
@@ -30,6 +31,10 @@ public class JsonArray implements JsonElement {
 	
 	public void add(JsonElement elem) {
 		this.array.add(elem);
+	}
+	
+	public List<JsonElement> getArray() {
+		return Collections.unmodifiableList(array);
 	}
 	
 	@Override
