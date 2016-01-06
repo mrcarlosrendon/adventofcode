@@ -60,6 +60,12 @@ public class JsonParserTest {
 	}
 	
 	@Test
+	public void objectWithNestedArray() {
+		JsonObject jelem = (JsonObject)JsonParser.parseJson("{\"a\":1,\"b\":2,\"c\":[1,1]}");
+		fail("todo");
+	}
+	
+	@Test
 	public void nonNestedArray() {
 		fail("todo");
 	}
