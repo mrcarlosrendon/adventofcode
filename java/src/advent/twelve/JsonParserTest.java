@@ -108,7 +108,6 @@ public class JsonParserTest {
 		
 		assertEquals("f", ((JsonString)d.get("c")).getString());
 		assertEquals("y", e.getString());
-		
 	}
 	
 	@Test

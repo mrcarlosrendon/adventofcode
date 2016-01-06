@@ -39,9 +39,8 @@ public class JsonParser {
 					parsingHierarchy.push(new JsonObjectKey());
 				} else if (c == ',' || c == ' ') {
 					// skip
-				} else if (c == '{') {
-					parsingHierarchy.push(new JsonObject());
-				} else {
+				}
+				else {
 					throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
 				}
 			} else if (currentType == JsonType.OBJECTKEY) {
