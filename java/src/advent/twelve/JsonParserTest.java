@@ -98,4 +98,12 @@ public class JsonParserTest {
 		assertEquals(3L, ((JsonNumber)secondNest.getArray().get(0)).getNumber().longValue());
 		assertEquals(4L, ((JsonNumber)thirdNest.getArray().get(0)).getNumber().longValue());
 	}
+	
+	@Test
+	public void complicatedNesting() {
+		
+		JsonParser.parseJson("[{\"d\":{\"c\":\"v\"},\"c\":\"y\"}]");
+		
+		//JsonArray jelem = (JsonArray) JsonParser.parseJson("[[\"g\",[{\"e\":\"g\",\"a\":77,\"d\":{\"c\":\"v\",\"a\":\"y\",\"b\":\"v\"},\"c\":\"y\"}]]]");
+	}
 }
