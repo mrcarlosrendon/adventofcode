@@ -34,7 +34,7 @@ public class JsonParser {
 					addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
 				} else if (c == '"') {
 					parsingHierarchy.push(new JsonObjectKey());
-				} else if (c == ',') {
+				} else if (c == ',' || c == ' ') {
 					// skip
 				} else if (c == '{') {
 					parsingHierarchy.push(new JsonObject());
@@ -79,7 +79,7 @@ public class JsonParser {
 				if (c == ',' || c == ']' || c == '}') {
 					addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
 				} else if (("" + c).matches("[0-9]")) {
-					parsingHierarchy.push((JsonNumber) parsingHierarchy.pop());
+					parsingHierarchy.push(new JsonNumber(Long.parseLong(((JsonNumber) parsingHierarchy.pop()).getNumber().toString()+c)));
 				} else {
 					throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
 				}
@@ -120,8 +120,6 @@ public class JsonParser {
 				JsonObjectKey key = (JsonObjectKey) parsingHierarchy.pop();
 				JsonObject obj = (JsonObject) parsingHierarchy.peekFirst();
 				obj.put(key.getString(), value.getElem());
-				// addToParent(parsingHierarchy, parsingHierarchy.pop(), ' ');
-				// // dummy character so it doesn't cascade down
 			} else if (currentChar == ',') {
 				parsingHierarchy.pop();
 				JsonObjectValue value = new JsonObjectValue(toAdd);
