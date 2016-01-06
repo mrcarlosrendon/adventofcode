@@ -62,7 +62,13 @@ public class JsonParserTest {
 	@Test
 	public void objectWithNestedArray() {
 		JsonObject jelem = (JsonObject)JsonParser.parseJson("{\"a\":1,\"b\":2,\"c\":[1,1]}");
-		fail("todo");
+		JsonNumber a = (JsonNumber)jelem.get("a");
+		JsonNumber b = (JsonNumber)jelem.get("b");
+		JsonArray c = (JsonArray)jelem.get("c");
+		
+		assertEquals(1L, a.getNumber().longValue());
+		assertEquals(2L, b.getNumber().longValue());
+		assertEquals(2, c.getLength());
 	}
 	
 	@Test

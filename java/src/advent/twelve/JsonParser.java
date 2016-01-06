@@ -113,6 +113,10 @@ public class JsonParser {
 			parsingHierarchy.push(toAdd);
 		} else if (elem.getJsonType() == JsonType.ARRAY) {
 			((JsonArray) elem).add(toAdd);
+			if (currentChar == ']') {
+				addToParent(parsingHierarchy, parsingHierarchy.pop(), ' ');
+			}
+			
 		} else if (elem.getJsonType() == JsonType.OBJECTVALUE) {
 			if (currentChar == '}') {
 				parsingHierarchy.pop();
