@@ -73,17 +73,29 @@ public class JsonParserTest {
 	
 	@Test
 	public void nonNestedArray() {
-		fail("todo");
+		JsonArray jelem = (JsonArray)JsonParser.parseJson("[1 , \"a\"]");
+		assertEquals(1L, ((JsonNumber)jelem.getArray().get(0)).getNumber().longValue());
+		assertEquals("a", ((JsonString)jelem.getArray().get(1)).getString());
 	}
 	
 	@Test
 	public void arrayWithNestedObjects() {
-		fail("todo");
+		JsonArray jelem = (JsonArray)JsonParser.parseJson("[1,{},{\"a\":3}]");
+		assertEquals(1L, ((JsonNumber)jelem.getArray().get(0)).getNumber().longValue());
+		assertEquals(0, ((JsonObject)jelem.getArray().get(1)).keys().size());
+		JsonNumber a = (JsonNumber)((JsonObject)jelem.getArray().get(2)).get("a");
+		assertEquals(3L, a.getNumber().longValue());
 	}
 	
 	@Test
 	public void nestedArray() {
-		fail("todo");
+		JsonArray jelem = (JsonArray)JsonParser.parseJson("[1,[2,[3],[4]]]");
+		assertEquals(1L, ((JsonNumber)jelem.getArray().get(0)).getNumber().longValue());
+		JsonArray firstNest = (JsonArray)jelem.getArray().get(1);
+		assertEquals(2L, ((JsonNumber)firstNest.getArray().get(0)).getNumber().longValue());
+		JsonArray secondNest = (JsonArray)firstNest.getArray().get(1);
+		JsonArray thirdNest = (JsonArray)firstNest.getArray().get(2);
+		assertEquals(3L, ((JsonNumber)secondNest.getArray().get(0)).getNumber().longValue());
+		assertEquals(4L, ((JsonNumber)thirdNest.getArray().get(0)).getNumber().longValue());
 	}
-
 }

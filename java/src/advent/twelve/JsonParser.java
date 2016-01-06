@@ -26,7 +26,10 @@ public class JsonParser {
 					parsingHierarchy.push(new JsonNegativeNumber(0));
 				} else if (c == '"') {
 					parsingHierarchy.push(new JsonString());
-				} else {
+				} else if (c == ' ') {
+					// ignore
+				}
+				else {
 					throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
 				}
 			} else if (currentType == JsonType.OBJECT) {
@@ -80,7 +83,10 @@ public class JsonParser {
 					addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
 				} else if (("" + c).matches("[0-9]")) {
 					parsingHierarchy.push(new JsonNumber(Long.parseLong(((JsonNumber) parsingHierarchy.pop()).getNumber().toString()+c)));
-				} else {
+				} else if (c == ' ') {
+					// skip
+				}
+				else {
 					throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
 				}
 			} else if (currentType == JsonType.NEGATIVENUMBER) {
@@ -124,6 +130,7 @@ public class JsonParser {
 				JsonObjectKey key = (JsonObjectKey) parsingHierarchy.pop();
 				JsonObject obj = (JsonObject) parsingHierarchy.peekFirst();
 				obj.put(key.getString(), value.getElem());
+				addToParent(parsingHierarchy, parsingHierarchy.pop(), ' ');
 			} else if (currentChar == ',') {
 				parsingHierarchy.pop();
 				JsonObjectValue value = new JsonObjectValue(toAdd);
