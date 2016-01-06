@@ -54,12 +54,8 @@ public class JsonParser {
 					throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
 				}
 			} else if (currentType == JsonType.OBJECTVALUE) {
-				if (c == '}') {
-					JsonObjectValue value = (JsonObjectValue) parsingHierarchy.pop();
-					JsonObjectKey key = (JsonObjectKey) parsingHierarchy.pop();
-					JsonObject obj = (JsonObject) parsingHierarchy.pop();
-					obj.put(key.getString(), value.getElem());
-					addToParent(parsingHierarchy, obj, c);
+				if (c == '}') {					
+					addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
 				} else if (c == ',') {
 					JsonObjectValue value = (JsonObjectValue) parsingHierarchy.pop();
 					JsonObjectKey key = (JsonObjectKey) parsingHierarchy.pop();
@@ -141,7 +137,14 @@ public class JsonParser {
 				parsingHierarchy.pop();
 				parsingHierarchy.push(new JsonObjectValue(toAdd));
 			}
-		} else {
+		} else if (elem.getJsonType() == JsonType.OBJECTKEY) {
+			JsonObjectValue value = (JsonObjectValue)toAdd;
+			JsonObjectKey key = (JsonObjectKey) parsingHierarchy.pop();
+			JsonObject obj = (JsonObject) parsingHierarchy.peekFirst();
+			obj.put(key.getString(), value.getElem());
+			addToParent(parsingHierarchy, parsingHierarchy.pop(), ' ');
+		}
+		else {
 			throw new RuntimeException("Unexpected parent type: " + elem.getJsonType());
 		}
 	}
