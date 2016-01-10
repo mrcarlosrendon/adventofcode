@@ -95,8 +95,11 @@ public class JsonParser {
 					throw new RuntimeException("Invalid JSON at character: " + c + " position " + i);
 				}
 			} else if (currentType == JsonType.STRING) {
-				if (c == '"') {
+				if (c == ',' || c == ']' || c == '}') {
 					addToParent(parsingHierarchy, parsingHierarchy.pop(), c);
+				}
+				else if (c == '"') {
+					// ignore?
 				} else if (("" + c).matches("[a-zA-Z]")) {
 					JsonString str = (JsonString) parsingHierarchy.pop();
 					parsingHierarchy.push(new JsonString(str.getString() + c));
