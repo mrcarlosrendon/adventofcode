@@ -39,6 +39,12 @@ public class Thirteen {
 		List<String> namesLst = new ArrayList<String>();
 		namesLst.addAll(names);
 		createOrders(namesLst, new ArrayList<String>());
+		
+		// part 2
+		namesLst.add("self");
+		bestScore = 0;
+		bestOrder = null;
+		createOrders(namesLst, new ArrayList<String>());		
 	}
 	
 	public static void createOrders(List<String> names, List<String> currOrder) {
