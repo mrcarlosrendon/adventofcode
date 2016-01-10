@@ -112,16 +112,16 @@ public class JsonParser {
 	}
 
 	private static void addToParent(Deque<JsonElement> parsingHierarchy, JsonElement toAdd, char currentChar) {
-		JsonElement elem = parsingHierarchy.peekFirst();
-		if (elem == null) {
+		JsonElement parent = parsingHierarchy.peekFirst();
+		if (parent == null) {
 			parsingHierarchy.push(toAdd);
-		} else if (elem.getJsonType() == JsonType.ARRAY) {
-			((JsonArray) elem).add(toAdd);
-			if (currentChar == ']') {
+		} else if (parent.getJsonType() == JsonType.ARRAY) {
+			((JsonArray) parent).add(toAdd);
+			if (currentChar == ']' && toAdd.getJsonType() != JsonType.ARRAY) {
 				addToParent(parsingHierarchy, parsingHierarchy.pop(), ' ');
 			}
 			
-		} else if (elem.getJsonType() == JsonType.OBJECTVALUE) {
+		} else if (parent.getJsonType() == JsonType.OBJECTVALUE) {
 			if (currentChar == '}') {
 				parsingHierarchy.pop();
 				JsonObjectValue value = new JsonObjectValue(toAdd);
@@ -139,7 +139,7 @@ public class JsonParser {
 				parsingHierarchy.pop();
 				parsingHierarchy.push(new JsonObjectValue(toAdd));
 			}
-		} else if (elem.getJsonType() == JsonType.OBJECTKEY) {
+		} else if (parent.getJsonType() == JsonType.OBJECTKEY) {
 			JsonObjectValue value = (JsonObjectValue)toAdd;
 			JsonObjectKey key = (JsonObjectKey) parsingHierarchy.pop();
 			JsonObject obj = (JsonObject) parsingHierarchy.peekFirst();
@@ -147,7 +147,7 @@ public class JsonParser {
 			addToParent(parsingHierarchy, parsingHierarchy.pop(), ' ');
 		}
 		else {
-			throw new RuntimeException("Unexpected parent type: " + elem.getJsonType());
+			throw new RuntimeException("Unexpected parent type: " + parent.getJsonType());
 		}
 	}
 
