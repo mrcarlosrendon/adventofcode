@@ -112,7 +112,7 @@ public class JsonParserTest {
 	
 	@Test
 	public void moreComplicatedNesting() {		
-		JsonArray jelem = (JsonArray) JsonParser.parseJson("[[\"g\",[{\"e\":\"g\",\"a\":77,\"d\":{\"c\":\"v\",\"a\":\"y\",\"b\":\"v\"},\"c\":\"y\"}]]]");
+		JsonParser.parseJson("[[\"g\",[{\"e\":\"g\",\"a\":77,\"d\":{\"c\":\"v\",\"a\":\"y\",\"b\":\"v\"},\"c\":\"y\"}]]]");
 	}
 	
 	@Test
