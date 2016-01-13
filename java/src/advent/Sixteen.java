@@ -42,8 +42,8 @@ public class Sixteen {
 			System.out.println(sue.number);
 		}
 	}	
-	
-	public static Set<Sue> filter(Set<Sue> filter, String attrib, int value) {
+		
+	public static Set<Sue> filterEq(Set<Sue> filter, String attrib, int value) {
 		Set<Sue> ret = new HashSet<>();		
 		for (Sue sue : filter) {
 			if (sue.attribs.containsKey(attrib)) {
@@ -56,6 +56,54 @@ public class Sixteen {
 			}
 		}
 		return ret;
+	}
+	
+	public static Set<Sue> filterLess(Set<Sue> filter, String attrib, int value) {
+		Set<Sue> ret = new HashSet<>();		
+		for (Sue sue : filter) {
+			if (sue.attribs.containsKey(attrib)) {
+				if (sue.attribs.get(attrib) < value) {
+					ret.add(sue);
+				}				
+			}
+			else {
+				ret.add(sue);
+			}
+		}
+		return ret;
+	}
+	
+	public static Set<Sue> filterMore(Set<Sue> filter, String attrib, int value) {
+		Set<Sue> ret = new HashSet<>();		
+		for (Sue sue : filter) {
+			if (sue.attribs.containsKey(attrib)) {
+				if (sue.attribs.get(attrib) > value) {
+					ret.add(sue);
+				}				
+			}
+			else {
+				ret.add(sue);
+			}
+		}
+		return ret;
+	}
+	
+	// rename to filter to re-run part 1
+	public static Set<Sue> filterPart1(Set<Sue> filter, String attrib, int value) {
+		return filterEq(filter, attrib, value);
+	}
+	
+	// part2 filter
+	public static Set<Sue> filter(Set<Sue> filter, String attrib, int value) {
+		if (attrib.equals("cats") || attrib.equals("trees")) {
+			return filterMore(filter, attrib, value);
+		}
+		else if (attrib.equals("pomeranians") || attrib.equals("goldfish")) {
+			return filterLess(filter, attrib, value);
+		}
+		else {
+			return filterEq(filter, attrib, value);
+		}
 	}
 	
 	public static class Sue {
