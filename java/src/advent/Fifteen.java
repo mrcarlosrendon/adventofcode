@@ -8,7 +8,8 @@ import java.util.List;
 
 public class Fifteen {
 
-	public static int bestScore=0;
+	public static int bestScore = 0;
+	public static int best500calScore = 0;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -40,6 +41,14 @@ public class Fifteen {
 				bestScore = score;
 				System.out.println("New Best: " + score + " " + ingredients);
 			}
+			int totCalories = 0;
+			for (IngredientModifier ingredient : ingredients) {
+				totCalories += ingredient.calories * ingredient.amount;
+			}
+			if (score > best500calScore && totCalories == 500) {
+				best500calScore = score;
+				System.out.println("New Best 500 Calorie Score (part2): " + score + " " + ingredients);
+			}
 		}
 		for (IngredientModifier ingredient : ingredients) {
 			if (alreadySet.contains(ingredient.name)) {
@@ -60,15 +69,13 @@ public class Fifteen {
 		int capacityTot = 0;
 		int durabilityTot = 0;
 		int flavorTot = 0;
-		int textureTot = 0;
-		int calorieTot = 0;
+		int textureTot = 0;		
 		int checkSum = 0;
 		for (IngredientModifier ingredient : ingredients) {
 			capacityTot += ingredient.amount*ingredient.capacity;
 			durabilityTot += ingredient.amount*ingredient.durability;
 			flavorTot += ingredient.amount*ingredient.flavor;
-			textureTot += ingredient.amount*ingredient.texture;			
-			calorieTot += ingredient.calories;
+			textureTot += ingredient.amount*ingredient.texture;
 			checkSum += ingredient.amount;
 		}		
 		if (checkSum != 100) {
