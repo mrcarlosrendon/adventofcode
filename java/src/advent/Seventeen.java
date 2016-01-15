@@ -22,7 +22,7 @@ public class Seventeen {
 			containers.add(new Container(containerId, Integer.parseInt(line)));
 			containerId++;
 		}		
-		int waysToFill = waysToFill(containers, new ArrayList<Container>(), 25, 0);
+		int waysToFill = waysToFill(containers, new ArrayList<Container>(), 150, 0);
 		System.out.println(waysToFill);
 	}
 	
@@ -38,6 +38,9 @@ public class Seventeen {
 		else {
 			int totalWays = 0;
 			for (Container c : containers) {
+				if (alreadyUsed.size() > 0 && alreadyUsed.get(alreadyUsed.size()-1).ContainerId > c.ContainerId) {
+					continue; // enforce ordering
+				}
 				if (alreadyUsed.contains(c)) {
 					continue;
 				}
