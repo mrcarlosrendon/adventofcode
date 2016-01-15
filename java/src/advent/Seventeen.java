@@ -7,8 +7,12 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
 public class Seventeen {
+	
+	private static int minContainers = Integer.MAX_VALUE;
+	private static int minComboCount = 0;
 	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
@@ -23,13 +27,31 @@ public class Seventeen {
 			containerId++;
 		}		
 		int waysToFill = waysToFill(containers, new ArrayList<Container>(), 150, 0);
-		System.out.println(waysToFill);
+		System.out.println(waysToFill);		
+		System.out.println("Smallest number of containers for sum: " + minContainers);
+		System.out.println("Number of combos of smallest container count: " + minComboCount);
 	}
 	
 	private static int waysToFill(Set<Container> containers, List<Container> alreadyUsed, 
 			final int goalAmount, int usedSoFar) {
 		if (usedSoFar == goalAmount) {
 			System.out.println(alreadyUsed);
+			
+			int containerCount = 0;
+			for (Container c : alreadyUsed) {
+				if (c.used) {
+					containerCount++;
+				}
+			}
+			
+			if (containerCount < minContainers) {
+				minContainers = containerCount;
+				minComboCount = 1;
+			}
+			else if (containerCount == minContainers) {
+				minComboCount++;
+			}
+			
 			return 1;
 		}
 		else if (usedSoFar > goalAmount || alreadyUsed.size() == containers.size()) {
