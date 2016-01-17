@@ -30,13 +30,19 @@ public class Eighteen {
 				}
 			}
 			lineCount++;
-		}		
+		}
+		// part 2, make sure starting corners set on
+		lights[0][0] = true;
+		lights[0][lights.length-1] = true;
+		lights[lights.length-1][0] = true;
+		lights[lights.length-1][lights.length-1] = true;
+		
 		for(int i=0; i<100; i++) {			
 			lights = nextState(lights);
 			print(lights);
-			System.out.println("");
+			System.out.println(i+1);
+			System.out.println("on: " + countLightsOn(lights));
 		}
-		System.out.println(countLightsOn(lights));
 	}
 	
 	public static int countLightsOn(boolean[][] lights) {
@@ -70,7 +76,20 @@ public class Eighteen {
 		for (int r=0; r<lights.length; r++) {
 			for(int c=0; c<lights.length; c++) {
 				int count = countNeighborsOn(r, c, lights);
-				if (lights[r][c]) {
+				// part 2 rules
+				if (r == 0 && c == 0) {
+					next[r][c] = true;
+				}
+				else if (r == 0 && c == lights.length - 1) {
+					next[r][c] = true;
+				}
+				else if (r == lights.length - 1 && c == 0) {
+					next[r][c] = true;
+				}
+				else if (r == lights.length - 1 && c == lights.length - 1) {
+					next[r][c] = true;
+				} // end part 2 rules
+				else if (lights[r][c]) {
 					if (count == 2 || count == 3) {
 						next[r][c] = true;
 					}
