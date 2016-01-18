@@ -31,9 +31,50 @@ public class TwentyOne {
 	};
 	
 	public static void main(String[] args) {		
-		System.out.println("least gold: " + leastCostWin(new ArrayList<Item>(), Integer.MAX_VALUE));
+		System.out.println("Least gold win: " + leastCostWin(new ArrayList<Item>(), Integer.MAX_VALUE));		
+		System.out.println("Most gold loss: " + highestCostLoss(new ArrayList<Item>(), Integer.MIN_VALUE));
 	}
 	
+	public static int highestCostLoss(List<Item> inventory, int maxCost) {		
+		if (legalFinalInventory(inventory) 
+				&& !firstWins(createFromInventory(inventory), createBoss())) {
+			int cost = inventoryCost(inventory);
+			if (cost > maxCost) {
+				System.out.println(inventory);
+				System.out.println("debug: " + cost);
+			}
+			return cost;
+		}
+		
+		for(Item item : items) {
+			if(!inventory.contains(item)) {
+				boolean added = false;
+				if (inventoryTypeCount(inventory, ITEM_TYPE.WEAPON) == 0 
+						&& item.type == ITEM_TYPE.WEAPON) {
+					inventory.add(item);
+					added = true;
+				}
+				else if (inventoryTypeCount(inventory, ITEM_TYPE.ARMOR) == 0 
+						&& item.type == ITEM_TYPE.ARMOR) {
+					inventory.add(item);
+					added = true;
+				}
+				else if (inventoryTypeCount(inventory, ITEM_TYPE.RING) < 2 
+					&& item.type == ITEM_TYPE.RING) {
+					inventory.add(item);
+					added = true;
+				}
+				if (added) {
+					int cost = highestCostLoss(inventory, maxCost);
+					if (cost > maxCost) {
+						maxCost = cost;
+					}
+					inventory.remove(item);
+				}
+			}
+		}
+		return maxCost;
+	}	
 	
 	public static int leastCostWin(List<Item> inventory, int minCost) {		
 		if (legalFinalInventory(inventory) 
