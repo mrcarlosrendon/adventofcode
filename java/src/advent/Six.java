@@ -12,6 +12,7 @@ public class Six {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String line = null;	
 		final boolean[][] lights = new boolean[SIZE][SIZE];
+		final int[][] brightLights = new int[SIZE][SIZE];
 		turnOff(0,SIZE-1,0,SIZE-1, lights);
 		while ((line = br.readLine()) != null) {
 			if (line.isEmpty()) {
@@ -27,6 +28,11 @@ public class Six {
 						Integer.parseInt(starts[1]), 
 						Integer.parseInt(ends[1]), 
 						lights);
+				turnOn(Integer.parseInt(starts[0]), 
+						Integer.parseInt(ends[0]), 
+						Integer.parseInt(starts[1]), 
+						Integer.parseInt(ends[1]), 
+						brightLights);
 			}
 			else if (line.contains("off")) {
 				String[] split = line.split(" ");
@@ -37,6 +43,11 @@ public class Six {
 						Integer.parseInt(starts[1]), 
 						Integer.parseInt(ends[1]), 
 						lights);
+				turnOff(Integer.parseInt(starts[0]), 
+						Integer.parseInt(ends[0]), 
+						Integer.parseInt(starts[1]), 
+						Integer.parseInt(ends[1]), 
+						brightLights);
 			}
 			else if (line.contains("toggle")) {
 				String[] split = line.split(" ");
@@ -47,6 +58,11 @@ public class Six {
 						Integer.parseInt(starts[1]), 
 						Integer.parseInt(ends[1]), 
 						lights);
+				toggle(Integer.parseInt(starts[0]), 
+						Integer.parseInt(ends[0]), 
+						Integer.parseInt(starts[1]), 
+						Integer.parseInt(ends[1]), 
+						brightLights);
 			}
 			else {
 				throw new RuntimeException("Didn't parse");
@@ -54,7 +70,8 @@ public class Six {
 			//print(lights);
 			System.out.println("on - " + countOn(lights) + " - total count - " + totalCount(lights));
 		}		
-		System.out.println("on - " + countOn(lights));		
+		System.out.println("on - " + countOn(lights));
+		System.out.println("total brightness - " + totalBrightness(brightLights));
 	}	
 	
 	public static int countOn(final boolean[][] lights) {
@@ -69,6 +86,16 @@ public class Six {
 		return count;
 	}
 	
+	public static int totalBrightness(final int[][] lights) {
+		int brightness = 0;		
+		for (int i=0; i<lights.length; i++) {
+			for(int j=0; j<lights[0].length; j++) {
+				brightness += lights[i][j];
+			}
+		}
+		return brightness;
+	}
+	
 	public static int totalCount(final boolean[][] lights) {
 		int count = 0;		
 		for (int i=0; i<lights.length; i++) {
@@ -78,7 +105,7 @@ public class Six {
 		}
 		return count;
 	}
-	
+		
 	public static void print(final boolean[][] lights) {
 		for (int i=0; i<lights.length; i++) {
 			for(int j=0; j<lights[0].length; j++) {
@@ -126,6 +153,46 @@ public class Six {
 		for(int i=lowerX; i<=upperX; i++) {
 			for(int j=lowerY; j<=upperY; j++) {
 				lights[i][j] = !lights[i][j];
+			}
+		}
+	}
+	
+	public static void turnOn(int x1, int x2, int y1, int y2, final int[][] lights) {
+		int lowerX = Math.min(x1, x2);
+		int upperX = Math.max(x1, x2);
+		int lowerY = Math.min(y1, y2);
+		int upperY = Math.max(y1, y2);		
+		for(int i=lowerX; i<=upperX; i++) {
+			for(int j=lowerY; j<=upperY; j++) {
+				lights[i][j]++;
+			}
+		}
+	}
+	
+	public static void turnOff(int x1, int x2, int y1, int y2, final int[][] lights) {
+		int lowerX = Math.min(x1, x2);
+		int upperX = Math.max(x1, x2);
+		int lowerY = Math.min(y1, y2);
+		int upperY = Math.max(y1, y2);		
+		for(int i=lowerX; i<=upperX; i++) {
+			for(int j=lowerY; j<=upperY; j++) {
+				lights[i][j]--;
+				if (lights[i][j] < 0) {
+					lights[i][j] = 0;
+				}
+			}
+		}
+	}
+	
+	public static void toggle(int x1, int x2, int y1, int y2, final int[][] lights) {
+		int lowerX = Math.min(x1, x2);
+		int upperX = Math.max(x1, x2);
+		int lowerY = Math.min(y1, y2);
+		int upperY = Math.max(y1, y2);		
+		for(int i=lowerX; i<=upperX; i++) {
+			for(int j=lowerY; j<=upperY; j++) {
+				lights[i][j]++;
+				lights[i][j]++;
 			}
 		}
 	}
