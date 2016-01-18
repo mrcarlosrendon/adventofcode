@@ -1,18 +1,23 @@
 package advent;
 
-import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 
 public class Six {
 
+	public final static int SIZE = 1000;
+	
 	public static void main(String[] args) throws IOException {
 		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		String line = null;	
-		final boolean[][] lights = new boolean[1000][1000];
-		turnOff(0,999,0,999, lights);
+		final boolean[][] lights = new boolean[SIZE][SIZE];
+		turnOff(0,SIZE-1,0,SIZE-1, lights);
 		while ((line = br.readLine()) != null) {
+			if (line.isEmpty()) {
+				break;
+			}
+			
 			if (line.contains("on")) {
 				String[] split = line.split(" ");
 				String[] starts = split[2].split(",");
@@ -37,7 +42,7 @@ public class Six {
 				String[] split = line.split(" ");
 				String[] starts = split[1].split(",");
 				String[] ends = split[3].split(",");				
-				turnOn(Integer.parseInt(starts[0]), 
+				toggle(Integer.parseInt(starts[0]), 
 						Integer.parseInt(ends[0]), 
 						Integer.parseInt(starts[1]), 
 						Integer.parseInt(ends[1]), 
@@ -46,10 +51,10 @@ public class Six {
 			else {
 				throw new RuntimeException("Didn't parse");
 			}
+			//print(lights);
 			System.out.println("on - " + countOn(lights) + " - total count - " + totalCount(lights));
 		}		
-		System.out.println("on - " + countOn(lights));
-		//print(lights);
+		System.out.println("on - " + countOn(lights));		
 	}	
 	
 	public static int countOn(final boolean[][] lights) {
@@ -87,12 +92,6 @@ public class Six {
 			System.out.println("");
 		}
 		System.out.println("");
-	}
-	
-	public static void image() {
-		BufferedImage image = new BufferedImage(1000, 1000, BufferedImage.TYPE_INT_RGB);
-		image.
-		
 	}
 	
 	public static void turnOn(int x1, int x2, int y1, int y2, final boolean[][] lights) {
