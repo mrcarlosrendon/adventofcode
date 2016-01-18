@@ -21,7 +21,7 @@ public class Ten {
 					System.out.println("Part 1:");
 					answer = apply(answer, true);					
 				}
-				if (i == 49) {
+				else if (i == 49) {
 					System.out.println("Part 2:");
 					answer = apply(answer, true); // Not sure why I get wrong answer for 50 times
 				}
